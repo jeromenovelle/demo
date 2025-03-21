@@ -30,7 +30,7 @@
       state: directory
       mode: '0755'
   - name: Execute first tasks to create website
-    include_role:
+    import_role:
       name: website
       tasks_from: "{{ item }}"
     with_items:
@@ -40,7 +40,7 @@
       - 'create_pv_2.yml'
     delegate_to: primary
   - name: Continue tasks to create website
-    include_role:
+    import_role:
       name: website
       tasks_from: "{{ item }}"
     with_items:
