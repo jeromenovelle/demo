@@ -21,7 +21,7 @@
       mode: '0777'
   - name: Generate index.php configuration file. 
     template:
-      src: "ttemplates/emplate_website.php.j2"
+      src: "templates/template_website.php.j2"
       dest: "/data/{{ client }}/www/index.php"
   - name: Create a directory files if it does not exist
     file:
