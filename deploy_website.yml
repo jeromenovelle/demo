@@ -1,6 +1,6 @@
 ---
 - name: deploy application
-  hosts: all
+  hosts: worker
   gather_facts: false
   become: yes
   vars:
@@ -38,6 +38,7 @@
       - 'create_configmap_nginx.yml'
       - 'create_pv_1.yml'
       - 'create_pv_2.yml'
+    delegate_to: primary
   - name: Continue tasks to create website
     include_role:
       name: website
@@ -46,5 +47,6 @@
       - 'create_service.yml'
       - 'create_ingress.yml'
       - 'create_deployment.yml'
+    delegate_to: primary
 
 
