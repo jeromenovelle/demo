@@ -1,4 +1,4 @@
-me: Create a k8s configmap for nginx
+- name: Create a k8s configmap for nginx
   k8s:
     kubeconfig: /root/.kube/config
     state: present
