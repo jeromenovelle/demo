@@ -39,7 +39,7 @@
     - kubernetes.core
   tasks:
   - name: Execute first tasks to create website
-    import_role:
+    include_role:
       name: website
       tasks_from: "{{ item }}"
     with_items:
@@ -48,7 +48,7 @@
       - 'create_pv_1.yml'
       - 'create_pv_2.yml'
   - name: Continue tasks to create website
-    import_role:
+    include_role:
       name: website
       tasks_from: "{{ item }}"
     with_items:
