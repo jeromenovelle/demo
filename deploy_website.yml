@@ -29,6 +29,16 @@
       recurse: yes
       state: directory
       mode: '0755'
+
+---
+- name: deploy application
+  hosts: primary
+  gather_facts: false
+  become: yes
+  vars:
+  collections:
+    - kubernetes.core
+  tasks:
   - name: Execute first tasks to create website
     import_role:
       name: website
@@ -38,7 +48,6 @@
       - 'create_configmap_nginx.yml'
       - 'create_pv_1.yml'
       - 'create_pv_2.yml'
-    delegate_to: primary
   - name: Continue tasks to create website
     import_role:
       name: website
@@ -47,6 +56,3 @@
       - 'create_service.yml'
       - 'create_ingress.yml'
       - 'create_deployment.yml'
-    delegate_to: primary
-
-
