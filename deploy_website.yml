@@ -30,7 +30,6 @@
       state: directory
       mode: '0755'
 
----
 - name: deploy application
   hosts: primary
   gather_facts: false
