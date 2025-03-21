@@ -1,0 +1,74 @@
+- name: Create a k8s configmap for nginx
+  k8s:
+    kubeconfig: /root/.kube/config
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        namespace: "{{ client }}-system"
+        name: "{{ client }}"
+        labels:
+          app: "{{ client }}"
+      spec:
+        selector:
+          matchLabels:
+            app: "{{ client }}"
+        replicas: 1
+        template:
+          metadata:
+            namespace: "{{ client }}-system"
+            labels:
+              app: "{{ client }}"
+            annotations:
+              sidecar.istio.io/inject: "false"
+          spec:
+            affinity:
+              podAntiAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                      - "{{ client }}"
+                  topologyKey: "kubernetes.io/hostname"
+            containers:
+            containers:
+            - name: "{{ client }}-php"
+              image: php:7-fpm
+              ports:
+              - containerPort: 9000
+                name: http
+                protocol: TCP
+              volumeMounts:
+              - name: nginx-config-volume
+                mountPath: /etc/nginx/nginx.conf
+                subPath: nginx.conf
+              - name: www-storage
+                mountPath: /data/files
+              readinessProbe:
+                tcpSocket:
+                  port: http
+                initialDelaySeconds: 10
+                timeoutSeconds: 5
+            - name: "{{ client }}-nginx"
+              image: nginx
+              ports:
+              - containerPort: 80
+              volumeMounts:
+              - name: nginx-config-volume
+                mountPath: /etc/nginx/nginx.conf
+                subPath: nginx.conf
+              - mountPath: "/usr/share/nginx/html"
+                name: www-storage
+            volumes:
+            - name: www-storage
+              persistentVolumeClaim:
+                claimName: "{{ client }}-pvc"
+            - name: nginx-config-volume
+              configMap:
+                name: "{{ client }}-nginx-config"
+            restartPolicy: Always
+
+

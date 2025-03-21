@@ -1,0 +1,22 @@
+me: Create a k8s configmap for nginx
+  k8s:
+    kubeconfig: /root/.kube/config
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ client }}-service"
+        namespace: "{{ client }}-system"
+        labels:
+          app: "{{ client }}"
+      spec:
+        ports:
+        - port: 80
+          name: http
+          targetPort: 80
+          protocol: TCP
+        selector:
+          app: "{{ client }}"
+
+

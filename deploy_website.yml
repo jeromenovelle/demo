@@ -1,0 +1,50 @@
+---
+- name: deploy application
+  hosts: all
+  gather_facts: false
+  become: yes
+  vars:
+  collections:
+    - kubernetes.core
+  tasks:
+  - name: Create a directory {{ client }} in /data
+    file:
+      path: /data/{{ client }}
+      recurse: yes
+      state: directory
+      mode: '0777'
+  - name: Create a directory www if it does not exist
+    file:
+      path: /data/{{ client }}/www
+      recurse: yes
+      state: directory
+      mode: '0777'
+  - name: Generate index.php configuration file. 
+    template:
+      src: "ttemplates/emplate_website.php.j2"
+      dest: "/data/{{ client }}/www/index.php"
+  - name: Create a directory files if it does not exist
+    file:
+      path: /data/{{ client }}/files
+      recurse: yes
+      state: directory
+      mode: '0755'
+  - name: Execute first tasks to create website
+    include_role:
+      name: website
+      tasks_from: "{{ item }}"
+    with_items:
+      - 'create_ns.yml'
+      - 'create_configmap_nginx.yml'
+      - 'create_pv_1.yml'
+      - 'create_pv_2.yml'
+  - name: Continue tasks to create website
+    include_role:
+      name: website
+      tasks_from: "{{ item }}"
+    with_items:
+      - 'create_service.yml'
+      - 'create_ingress.yml'
+      - 'create_deployment.yml'
+
+

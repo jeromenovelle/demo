@@ -1,0 +1,14 @@
+---
+- name: deploy application
+  hosts: all
+  gather_facts: false
+  become: yes
+
+  collections:
+    - kubernetes.core
+
+  tasks:
+  - name: Remove all website
+    include_role:
+      name: website
+      tasks_from: "remove_website"
