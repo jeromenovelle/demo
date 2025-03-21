@@ -1,6 +1,6 @@
 ---
 - name: deploy application
-  hosts: worker
+  hosts: Workers
   gather_facts: false
   become: yes
   vars:
@@ -31,7 +31,7 @@
       mode: '0755'
 
 - name: deploy application
-  hosts: primary
+  hosts: Primary
   gather_facts: false
   become: yes
   vars:
