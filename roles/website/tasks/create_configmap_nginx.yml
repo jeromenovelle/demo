@@ -25,7 +25,7 @@
                   listen 80 default_server;
                   listen [::]:80 default_server;
                   server_name _;
-                  root        /usr/share/nginx/html;
+                  root        /usr/share/nginx/html/www;
                   location / {
                       try_files $uri /index.php$is_args$args;
                   }
@@ -63,6 +63,6 @@
 
               #gzip  on;
 
-              include /etc/nginx/conf.d/*.conf;
+              #include /etc/nginx/conf.d/*.conf;
           }
 

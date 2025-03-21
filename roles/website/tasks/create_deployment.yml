@@ -43,7 +43,7 @@
                 protocol: TCP
               volumeMounts:
               - name: nginx-config-volume
-                mountPath: /etc/nginx/nginx.conf
+                mountPath: /usr/share/nginx/html
                 subPath: nginx.conf
               - name: www-storage
                 mountPath: /data/files
