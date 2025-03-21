@@ -13,7 +13,7 @@
           nginx.ingress.kubernetes.io/ssl-redirect: "false"
       spec:
         rules:
-        - host: "{{ client }}-website.domain.local"
+        - host: "{{ client }}-website.vnf.local"
           http:
             paths:
             - pathType: Prefix #Exact
