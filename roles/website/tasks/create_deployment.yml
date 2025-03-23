@@ -34,17 +34,13 @@
                       - "{{ client }}"
                   topologyKey: "kubernetes.io/hostname"
             containers:
-            containers:
             - name: "{{ client }}-php"
-              image: php:7-fpm
+              image: php-fpm
               ports:
               - containerPort: 9000
                 name: http
                 protocol: TCP
               volumeMounts:
-              - name: nginx-config-volume
-                mountPath: /usr/share/nginx/html
-                subPath: nginx.conf
               - name: www-storage
                 mountPath: "/data/files"
               readinessProbe:

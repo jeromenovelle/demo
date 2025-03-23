@@ -10,59 +10,25 @@
         namespace: "{{ client }}-system"
       data:
         nginx.conf: |
-          user  nginx;
-          worker_processes  auto;
-
-          error_log  /var/log/nginx/error.log notice;
-          pid        /var/run/nginx.pid;
-      
-          events {
-              worker_connections  1024;
-          }
-
+          events {}
           http {
             server {
-                  listen 80 default_server;
-                  listen [::]:80 default_server;
-                  server_name _;
-                  root        /usr/share/nginx/html;
-                  location / {
-                      try_files $uri /index.php$is_args$args;
-                  }
-                  location ~ ^/index\.php(/|$) {
-                      fastcgi_pass 127.0.0.1:9000;
-                      fastcgi_read_timeout 300;
-                      proxy_read_timeout 300;
-                      fastcgi_split_path_info ^(.+\.php)(/.*)$;
-                      include fastcgi_params;
-                      fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-                      fastcgi_param DOCUMENT_ROOT $realpath_root;
-                      internal;
-                  }
-                  location ~ \.php$ {
-                    return 404;
-                  }
-                  client_max_body_size 6m;
-                  error_log  /var/log/nginx/error.log;
-                  access_log /var/log/nginx/access.log;
+              listen 80 default_server;
+              listen [::]:80 default_server;
+
+              root /var/www/html;
+              index index.php index.html;
+
+              server_name _;
+
+              location / {
+                try_files $uri $uri/ =404;
               }
-      
-              include       /etc/nginx/mime.types;
-              default_type  application/octet-stream;
-      
-              log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-                                '$status $body_bytes_sent "$http_referer" '
-                                '"$http_user_agent" "$http_x_forwarded_for"';
-
-              access_log  /var/log/nginx/access.log  main;
-
-              sendfile        on;
-              #tcp_nopush     on;
-
-              keepalive_timeout  65;
-
-              #gzip  on;
-
-              #include /etc/nginx/conf.d/*.conf;
+              location ~ \.php$ {
+                include fastcgi_params;
+                fastcgi_param REQUEST_METHOD $request_method;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                fastcgi_pass 127.0.0.1:9000;
+              }
+            }
           }
-
